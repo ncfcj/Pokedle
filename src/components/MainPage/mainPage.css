@@ -1,9 +1,20 @@
-.container{
-    width: 80%;
+.pokemonText{
+  font-family: PokemonGb;
+  color:black;
 }
-  
-.guessLineContainer{
-  display: flex;
-  flex-flow: column wrap;
+
+.container{
+  height: 100%;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+  gap: 1%;
+}
+
+.nameInput{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
 }

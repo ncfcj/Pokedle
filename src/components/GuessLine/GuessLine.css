@@ -1,4 +1,65 @@
-.guessLineContainer{
+.guess{
     display: flex;
     flex-flow: column wrap;
+    justify-content: baseline;
+    align-items: center;
+    border: 2px solid black;
+    width: 80%;
+    height: 13%;
+    border-radius: 4px;
+}
+
+.name{
+    height: 100%;
+    width: 14.15%;
+    border-right: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hint{
+    height: 100%;
+    width: 14.28%;
+    border-right: 1px solid black;
+}
+
+.lastHint{
+    height: 100%;
+    width: 14%;
+    border-radius: 0px 4px 4px 0px;
+}
+
+.wrong{
+    background-color: lightcoral;
+}
+
+.right{
+    background-color: lightgreen;
+}
+
+.close{
+    background-color: lightsalmon;
+}
+
+.pokemonText{
+    font-family: PokemonGb;
+    color:black;
+    font-size: 0.75rem;
+}
+
+.wrap{
+    overflow-wrap: break-word;
+    text-align: center;
+    min-width: 40%;
+}
+
+.justifyWrappedText{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.spriteImg{
+    transform: scale(1.7);
 }

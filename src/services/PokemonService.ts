@@ -4,7 +4,7 @@ import { IPokemonData } from "../interfaces/IPokemonData";
 export class PokemonService {
     totalPokemonNumber = 809;
 
-    getPokemonData = async (pokemonNumber : number) => {
+    getPokemonData = (pokemonNumber : number) => {
         const pokemonData = pokemonJson[pokemonNumber - 1];
         return {
             name : pokemonData.name,

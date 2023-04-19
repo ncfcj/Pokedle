@@ -1,0 +1,31 @@
+import IPokemonUrl from "./IPokemonUrl";
+
+export interface IPokemonSpecies{
+    base_happiness : number,
+    capture_rate: number,
+    color : IPokemonUrl,
+    egg_groups: IPokemonUrl[],
+    evolution_chain: any,
+    evolves_from_species: IPokemonUrl,
+    flavor_text_entries: any[],
+    form_descriptions: unknown[],
+    forms_switchable: boolean,
+    gender_rate: number,
+    genera: any[],
+    generation: IPokemonUrl,
+    growth_rate: IPokemonUrl,
+    habitat: IPokemonUrl,
+    has_gender_differences: boolean,
+    hatch_counter: number,
+    id: number,
+    is_baby: boolean,
+    is_legendary: boolean,
+    is_mythical: boolean,
+    name: string,
+    names: any[],
+    order: number,
+    pal_park_encounters: any[],
+    pokedex_numbers: any[],
+    shape: IPokemonUrl,
+    varieties: any[]
+}

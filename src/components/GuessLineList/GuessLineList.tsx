@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import "./GuessLineList.css";
 import { IPokemonData } from "../../interfaces/IPokemonData";
+import { GuessLine } from "../GuessLine/GuessLine";
+import { IPokemonSpecies } from "../../interfaces/IPokemonSpecies";
+import axios from "axios";
 
 interface IGuessLineListComponent {
-    GuessLineList : IPokemonData[]
+    GuessLineList : IPokemonData[],
+    TargetPokemonData : IPokemonData,
+    TargetPokemonSpecies : IPokemonSpecies
 }
 
 export const GuessLineList = (props : IGuessLineListComponent) => {
@@ -15,6 +20,15 @@ export const GuessLineList = (props : IGuessLineListComponent) => {
     
     return(
         <div className='guessLineContainer'>
+            {
+                guessList.map(x => {
+                    return <GuessLine 
+                                key={x.name}
+                                targetPokemonData={props.TargetPokemonData} 
+                                guessPokemonData={x}
+                                targetPokemonSpecies={props.TargetPokemonSpecies}></GuessLine>
+                })
+            }
         </div>
     )
 }
