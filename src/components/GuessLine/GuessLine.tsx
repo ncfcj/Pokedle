@@ -95,7 +95,7 @@ export const GuessLine = (props : IGuessLineComponent) => {
     }
 
     const verifyHabitat = () => {
-        if (props.targetPokemonSpecies.habitat == undefined) return "";
+        if (props.targetPokemonSpecies.habitat == undefined) return "close";
         if (guessPokemonSpecies.habitat == undefined) return "";
         if (guessPokemonSpecies.habitat.name.trim().toUpperCase() == props.targetPokemonSpecies.habitat.name.trim().toUpperCase()) return "right";
         
@@ -107,6 +107,14 @@ export const GuessLine = (props : IGuessLineComponent) => {
         if (guessPokemonSpecies.shape == undefined) return "";
         if (guessPokemonSpecies.shape.name.trim().toUpperCase() == props.targetPokemonSpecies.shape.name.trim().toUpperCase()) return "right";
     
+        return "wrong";
+    }
+
+    const verifyColor = () => {
+        if (props.targetPokemonSpecies.color == undefined) return "";
+        if (guessPokemonSpecies.color == undefined) return "";
+        if (guessPokemonSpecies.color.name.trim().toUpperCase() == props.targetPokemonSpecies.color.name.trim().toUpperCase()) return "right";
+
         return "wrong";
     }
 
@@ -123,9 +131,15 @@ export const GuessLine = (props : IGuessLineComponent) => {
     }
 
     const writeHabitat = () => {
-        if (guessPokemonSpecies.habitat == undefined) return "";
+        if (guessPokemonSpecies.habitat == undefined) return capitalizeFirstLetter("Unknown");
         
         return capitalizeFirstLetter(guessPokemonSpecies.habitat.name);
+    }
+
+    const writeColor = () => {
+        if (guessPokemonSpecies.color == undefined) return "";
+        
+        return capitalizeFirstLetter(guessPokemonSpecies.color.name);
     }
 
     const capitalizeFirstLetter = (word : string) => {
@@ -163,6 +177,9 @@ export const GuessLine = (props : IGuessLineComponent) => {
             </div>
             <div className={`hint justifyWrappedText ${verifyShape()}`}>
                 <p className="pokemonText wrap">{writeShape()}</p>
+            </div>
+            <div className={`hint justifyWrappedText ${verifyColor()}`}>
+                <p className="pokemonText wrap">{writeColor()}</p>
             </div>
             <div className={`lastHint justifyWrappedText ${verifyLegendary(props.guessPokemonData.isLegendary)}`}>
                 <p className="pokemonText wrap">{props.guessPokemonData.isLegendary ? "Legendary" : "Normal"}</p>

@@ -3,5 +3,6 @@ export interface IPokemonData {
     generation : number,
     types : string[],
     isLegendary : boolean,
-    id: number
+    id: number,
+    guessNumber : number
 }

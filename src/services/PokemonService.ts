@@ -36,7 +36,7 @@ export class PokemonService {
         return;
     }
 
-    getPokemonByName = (pokemonNameGuess : string) => {
+    getPokemonByName = (pokemonNameGuess : string, guessNumber: number) => {
         const pokemonFound = pokemonJson.find(pokemon => pokemon.name.toUpperCase() == pokemonNameGuess.trim().toUpperCase());
         if (pokemonFound == undefined) return undefined;
         return {
@@ -44,7 +44,8 @@ export class PokemonService {
             generation : pokemonFound.generation,
             types : [pokemonFound.type1, pokemonFound.type2],
             isLegendary : pokemonFound.is_legendary == 1,
-            id : this.getPokemonId(pokemonFound)
+            id : this.getPokemonId(pokemonFound),
+            guessNumber : guessNumber
         } as IPokemonData
     }
 

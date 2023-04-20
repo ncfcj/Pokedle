@@ -3,7 +3,6 @@ import "./GuessLineList.css";
 import { IPokemonData } from "../../interfaces/IPokemonData";
 import { GuessLine } from "../GuessLine/GuessLine";
 import { IPokemonSpecies } from "../../interfaces/IPokemonSpecies";
-import axios from "axios";
 
 interface IGuessLineListComponent {
     GuessLineList : IPokemonData[],
