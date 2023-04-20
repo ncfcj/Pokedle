@@ -75,8 +75,7 @@ export const GuessLine = (props : IGuessLineComponent) => {
         var targetPokemonLength : number = targetTypes.length;
 
         targetTypes.forEach(x => {
-            if (types.includes(x))
-                isInArray++;
+            if(types.find(y => y.trim().toUpperCase() == x.trim().toUpperCase())) isInArray++;
         })
 
         if (isInArray == targetPokemonLength)

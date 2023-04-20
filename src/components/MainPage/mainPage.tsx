@@ -59,6 +59,7 @@ export const MainPage = () => {
             if (targetPokemonData.name.trim().toUpperCase() == pokemon.name.trim().toUpperCase()){
                 alert(`Congratulations, you have guessed ${pokemon.name} in ${guess} tries !`);
                 setInputDisabled(true);
+                setNewPokemonInLocalStorage();
                 return;
             }
         }, 300);
@@ -81,7 +82,6 @@ export const MainPage = () => {
 
     useEffect(() => {
         getTargetPokemonData();
-        setNewPokemonInLocalStorage();
     }, []);
 
     return(
