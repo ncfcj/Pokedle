@@ -74,8 +74,14 @@ export const MainPage = () => {
         setTargetPokemonSpecies(res.data);
     }
 
+    const setNewPokemonInLocalStorage = () => {
+        var totalOfPokemonsInGen1 = 151;
+        localStorage.setItem("pokemon", (Math.floor(Math.random() * totalOfPokemonsInGen1) + 1).toString());
+    }
+
     useEffect(() => {
         getTargetPokemonData();
+        setNewPokemonInLocalStorage();
     }, []);
 
     return(
