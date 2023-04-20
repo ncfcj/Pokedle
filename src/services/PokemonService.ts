@@ -24,7 +24,7 @@ export class PokemonService {
 
             if (differentDay){
                 localStorage.setItem("date", today.toString());
-                localStorage.setItem("pokemon", (Math.floor(Math.random() * this.totalPokemonNumber) + 1).toString());
+                localStorage.setItem("pokemon", (Math.floor(Math.random() * 151) + 1).toString());
                 return;
             }
 
@@ -32,7 +32,7 @@ export class PokemonService {
         }
 
         localStorage.setItem("date", today.toString());
-        localStorage.setItem("pokemon", (Math.floor(Math.random() * this.totalPokemonNumber) + 1).toString());
+        localStorage.setItem("pokemon", (Math.floor(Math.random() * 151) + 1).toString());
         return;
     }
 
