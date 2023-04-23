@@ -27,31 +27,7 @@ export const GuessLine = (props : GuessLineComponent) => {
     }
 
     const getGeneration = (generationNumber : number) => {
-        switch (generationNumber) {
-            case 1:
-                return Generations.Kanto;
-
-            case 2:
-                return Generations.Johto;
-
-            case 3:
-                return Generations.Hoenn;
-
-            case 4:
-                return Generations.Sinnoh; 
-                
-            case 5:
-                return Generations.Unova;  
-            
-            case 6:
-                return Generations.Kalos;        
-
-            case 7:
-                return Generations.Alola;    
-
-            default:
-                return "";
-        }
+        return Generations[generationNumber];
     }
 
     const handleTypes = (types : string[]) => {
