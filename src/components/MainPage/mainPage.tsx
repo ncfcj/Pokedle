@@ -1,18 +1,20 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import "./mainPage.css";
 import { PokemonService } from "../../services/PokemonService";
-import { IPokemonData } from "../../interfaces/IPokemonData";
+import { PokemonData } from "../../types/PokemonData";
 import { GuessLineList } from "../GuessLineList/GuessLineList";
 import axios from "axios";
-import { IPokemonSpecies } from "../../interfaces/IPokemonSpecies";
+import { PokemonSpecies } from "../../types/PokemonSpecies";
+import { VictoryDialog } from "../Dialog/VictoryDialog";
 
 export const MainPage = () => {
-    const [guessLineList, setGuessLineList] = useState<IPokemonData[]>([] as IPokemonData[]);
-    const [targetPokemonData, setTargetPokemonData] = useState<IPokemonData>({} as IPokemonData);
+    const [guessLineList, setGuessLineList] = useState<PokemonData[]>([] as PokemonData[]);
+    const [targetPokemonData, setTargetPokemonData] = useState<PokemonData>({} as PokemonData);
     const [guessInputValue, setGuessInputValue] = useState<string>("");
-    const [targetPokemonSpecies, setTargetPokemonSpecies] = useState<IPokemonSpecies>({} as IPokemonSpecies);
+    const [targetPokemonSpecies, setTargetPokemonSpecies] = useState<PokemonSpecies>({} as PokemonSpecies);
     const [guessNumber, setGuessNumber] = useState<number>(0);
     const [inputDisabled, setInputDisabled] = useState<boolean>(false);
+    const [dialogIsOpen, setDialogIsOpen] = useState<boolean>(false);
     
     const service = new PokemonService();
 
@@ -57,7 +59,7 @@ export const MainPage = () => {
 
         setTimeout(() => {
             if (targetPokemonData.name.trim().toUpperCase() == pokemon.name.trim().toUpperCase()){
-                alert(`Congratulations, you have guessed ${pokemon.name} in ${guess} tries !`);
+                setDialogIsOpen(true);
                 setInputDisabled(true);
                 setNewPokemonInLocalStorage();
                 return;
@@ -80,6 +82,10 @@ export const MainPage = () => {
         localStorage.setItem("pokemon", (Math.floor(Math.random() * totalOfPokemonsInGen1) + 1).toString());
     }
 
+    const handleClose = () => {
+        setDialogIsOpen(false);
+    };
+
     useEffect(() => {
         getTargetPokemonData();
     }, []);
@@ -101,6 +107,11 @@ export const MainPage = () => {
                 GuessLineList={guessLineList}
                 TargetPokemonData={targetPokemonData}
                 TargetPokemonSpecies={targetPokemonSpecies}></GuessLineList>
+            <VictoryDialog
+                open={dialogIsOpen}
+                onClose={handleClose}
+                message={`Congratulations! You have guessed ${targetPokemonData.name} in ${guessNumber} tries !`}
+            />
       </div>
     )
 }

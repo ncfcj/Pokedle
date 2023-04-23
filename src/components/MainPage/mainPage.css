@@ -11,6 +11,7 @@
   align-items: center;
   flex-flow: column;
   gap: 1%;
+  background-color: white;
 }
 
 .nameInput{

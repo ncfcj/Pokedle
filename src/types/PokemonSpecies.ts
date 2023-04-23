@@ -1,20 +1,20 @@
-import IPokemonUrl from "./IPokemonUrl";
+import PokemonUrl from "./PokemonUrl";
 
-export interface IPokemonSpecies{
+export type PokemonSpecies = {
     base_happiness : number,
     capture_rate: number,
-    color : IPokemonUrl,
-    egg_groups: IPokemonUrl[],
+    color : PokemonUrl,
+    egg_groups: PokemonUrl[],
     evolution_chain: any,
-    evolves_from_species: IPokemonUrl,
+    evolves_from_species: PokemonUrl,
     flavor_text_entries: any[],
     form_descriptions: unknown[],
     forms_switchable: boolean,
     gender_rate: number,
     genera: any[],
-    generation: IPokemonUrl,
-    growth_rate: IPokemonUrl,
-    habitat: IPokemonUrl,
+    generation: PokemonUrl,
+    growth_rate: PokemonUrl,
+    habitat: PokemonUrl,
     has_gender_differences: boolean,
     hatch_counter: number,
     id: number,
@@ -26,6 +26,6 @@ export interface IPokemonSpecies{
     order: number,
     pal_park_encounters: any[],
     pokedex_numbers: any[],
-    shape: IPokemonUrl,
+    shape: PokemonUrl,
     varieties: any[]
 }

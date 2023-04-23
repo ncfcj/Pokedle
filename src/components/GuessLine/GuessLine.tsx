@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
-import { IPokemonData } from "../../interfaces/IPokemonData";
+import { PokemonData } from "../../types/PokemonData";
 import "./GuessLine.css";
 import axios from "axios";
-import { IPokemonSpecies } from "../../interfaces/IPokemonSpecies";
+import { PokemonSpecies } from "../../types/PokemonSpecies";
+import { Generations } from "../../enums/Generations";
 
-interface IGuessLineComponent {
-    targetPokemonData : IPokemonData,
-    guessPokemonData : IPokemonData,
-    targetPokemonSpecies : IPokemonSpecies
+type GuessLineComponent = {
+    targetPokemonData : PokemonData,
+    guessPokemonData : PokemonData,
+    targetPokemonSpecies : PokemonSpecies
 }
 
-export const GuessLine = (props : IGuessLineComponent) => {
-    const [guessPokemonSpecies, setGuessPokemonSpecies] = useState<IPokemonSpecies>({} as IPokemonSpecies);
+export const GuessLine = (props : GuessLineComponent) => {
+    const [guessPokemonSpecies, setGuessPokemonSpecies] = useState<PokemonSpecies>({} as PokemonSpecies);
 
     const getSpritePathById = (pokemonId : number) => {
         if(pokemonId > 0 && pokemonId <= 9){
@@ -25,29 +26,29 @@ export const GuessLine = (props : IGuessLineComponent) => {
         return `/sprites/${pokemonId}MS.png`;
     }
 
-    const getGenerationByNumber = (generationNumber : number) => {
+    const getGeneration = (generationNumber : number) => {
         switch (generationNumber) {
             case 1:
-                return "Kanto";
-            
+                return Generations.Kanto;
+
             case 2:
-                return "Johto";
-            
+                return Generations.Johto;
+
             case 3:
-                return "Hoenn";
-            
+                return Generations.Hoenn;
+
             case 4:
-                return "Sinnoh";
-            
+                return Generations.Sinnoh; 
+                
             case 5:
-                return "Unova";
+                return Generations.Unova;  
             
             case 6:
-                return "Kalos";
-            
+                return Generations.Kalos;        
+
             case 7:
-                return "Alola";
-        
+                return Generations.Alola;    
+
             default:
                 return "";
         }
@@ -169,7 +170,7 @@ export const GuessLine = (props : IGuessLineComponent) => {
                 <p className="pokemonText wrap">{handleTypes(props.guessPokemonData.types)}</p>
             </div>
             <div className={`hint justifyWrappedText ${verifyGeneration(props.guessPokemonData.generation)}`}>
-                <p className="pokemonText wrap">{getGenerationByNumber(props.guessPokemonData.generation)}</p>
+                <p className="pokemonText wrap">{getGeneration(props.guessPokemonData.generation)}</p>
             </div>
             <div className={`hint justifyWrappedText ${verifyHabitat()}`}>
                 <p className="pokemonText wrap">{writeHabitat()}</p>

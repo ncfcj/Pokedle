@@ -1,5 +1,5 @@
 import pokemonJson from "../data/pokemon.json"
-import { IPokemonData } from "../interfaces/IPokemonData";
+import { PokemonData } from "../types/PokemonData";
 
 export class PokemonService {
     totalPokemonNumber = 809;
@@ -12,7 +12,7 @@ export class PokemonService {
             types : [pokemonData.type1, pokemonData.type2],
             isLegendary : pokemonData.is_legendary == 1,
             id: pokemonNumber
-        } as IPokemonData
+        } as PokemonData
     }
 
     handleLocalStorage = () => {
@@ -46,7 +46,7 @@ export class PokemonService {
             isLegendary : pokemonFound.is_legendary == 1,
             id : this.getPokemonId(pokemonFound),
             guessNumber : guessNumber
-        } as IPokemonData
+        } as PokemonData
     }
 
     getPokemonId = (pokemon: any) => {

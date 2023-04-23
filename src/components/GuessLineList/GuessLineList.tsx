@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import "./GuessLineList.css";
-import { IPokemonData } from "../../interfaces/IPokemonData";
+import { PokemonData } from "../../types/PokemonData";
 import { GuessLine } from "../GuessLine/GuessLine";
-import { IPokemonSpecies } from "../../interfaces/IPokemonSpecies";
+import { PokemonSpecies } from "../../types/PokemonSpecies";
 
-interface IGuessLineListComponent {
-    GuessLineList : IPokemonData[],
-    TargetPokemonData : IPokemonData,
-    TargetPokemonSpecies : IPokemonSpecies
+type GuessLineListComponent  = {
+    GuessLineList : PokemonData[],
+    TargetPokemonData : PokemonData,
+    TargetPokemonSpecies : PokemonSpecies
 }
 
-export const GuessLineList = (props : IGuessLineListComponent) => {
-    const [guessList, setGuessList] = useState<IPokemonData[]>([] as IPokemonData[]);
+export const GuessLineList = (props : GuessLineListComponent) => {
+    const [guessList, setGuessList] = useState<PokemonData[]>([] as PokemonData[]);
 
     useEffect(() => {
         setGuessList(props.GuessLineList);

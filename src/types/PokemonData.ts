@@ -1,4 +1,4 @@
-export interface IPokemonData {
+export type PokemonData = {
     name : string,
     generation : number,
     types : string[],
