@@ -15,6 +15,8 @@ export const MainPage = () => {
     const [guessNumber, setGuessNumber] = useState<number>(0);
     const [inputDisabled, setInputDisabled] = useState<boolean>(false);
     const [dialogIsOpen, setDialogIsOpen] = useState<boolean>(false);
+    const [resetGame, setResetGame] = useState<number>(0);
+    const [lastGuess, setLastGuess] = useState<string>("");
     
     const service = new PokemonService();
 
@@ -54,6 +56,8 @@ export const MainPage = () => {
         });
         setGuessLineList(guessLineArray);
 
+        setLastGuess(pokemon.name);
+
         // clear the input value before a new guess
         setGuessInputValue("");
 
@@ -84,7 +88,20 @@ export const MainPage = () => {
 
     const handleClose = () => {
         setDialogIsOpen(false);
+        setInputDisabled(false);
+        setGuessLineList([] as PokemonData[]);
+        setGuessNumber(0);
+        setNewPokemonInLocalStorage();
+        let resetGameNumber = resetGame;
+        setResetGame(resetGameNumber++);
+        getTargetPokemonData();
     };
+
+    const handleKeydown = (event: React.KeyboardEvent<HTMLElement>) => {
+        if (event.key === 'Enter') {
+            guessPokemon();
+        }
+    }
 
     useEffect(() => {
         getTargetPokemonData();
@@ -97,7 +114,8 @@ export const MainPage = () => {
                 className="guessInput pokemonText" 
                 disabled={inputDisabled}
                 onChange={handleChange} 
-                value={guessInputValue}></input>
+                value={guessInputValue}
+                onKeyDown={handleKeydown}/>
               <button 
                 disabled={inputDisabled}
                 onClick={guessPokemon} 
@@ -110,7 +128,7 @@ export const MainPage = () => {
             <VictoryDialog
                 open={dialogIsOpen}
                 onClose={handleClose}
-                message={`Congratulations! You have guessed ${targetPokemonData.name} in ${guessNumber} tries !`}
+                message={`You have guessed ${lastGuess} in ${guessNumber} tries !`}
             />
       </div>
     )

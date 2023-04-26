@@ -1,6 +1,5 @@
 import "./VictoryDialog.css";
 import Dialog from '@mui/material/Dialog';
-import Button from '@mui/material/Button';
 
 type VictoryDialogComponent = {
     open: boolean;
@@ -19,10 +18,16 @@ export const VictoryDialog = (props : VictoryDialogComponent) => {
         onClose(value);
     };
     
-    return (<Dialog onClose={handleClose} open={open}>
-        <h1>{message}</h1>
-        <Button
-            onClick={() => handleButtonClick(message)}
-        ></Button>
-    </Dialog>)
+    return (
+        <Dialog onClose={handleClose} open={open}>
+            <div className="messageContainer">
+                <h2 className="title">{"Congratulations !"}</h2>
+                <p className="message">{message}</p>
+                <button
+                className="dialogButton"
+                onClick={() => handleButtonClick(message)}
+                >Try Again !</button>
+            </div>
+        </Dialog>
+    )
 }

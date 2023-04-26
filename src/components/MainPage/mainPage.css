@@ -18,4 +18,14 @@
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
+  gap: 2%;
+}
+
+.guessInputButton{
+  color:white;
+  background-color: red;
+}
+
+.guessInputButton:hover{
+  border: 1px solid black;
 }

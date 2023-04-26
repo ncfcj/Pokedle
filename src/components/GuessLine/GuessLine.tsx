@@ -47,18 +47,13 @@ export const GuessLine = (props : GuessLineComponent) => {
     }
 
     const verifyPokemonTypes = (types: string[]) => {
-        var isInArray : number = 0;
         var targetTypes = props.targetPokemonData.types.filter(x => x != "");
-        var targetPokemonLength : number = targetTypes.length;
+        var typesFiltered = types.filter(x => x != "");
 
-        targetTypes.forEach(x => {
-            if(types.find(y => y.trim().toUpperCase() == x.trim().toUpperCase())) isInArray++;
-        })
-
-        if (isInArray == targetPokemonLength)
+        if ((targetTypes[0] == typesFiltered[0] && targetTypes[1] == typesFiltered[1]))
             return "right";
         
-        if (isInArray < targetPokemonLength && isInArray > 0)
+        if (targetTypes.includes(typesFiltered[0]) || targetTypes.includes(typesFiltered[1]))
             return "close";
         
         return "wrong";
