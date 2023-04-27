@@ -123,14 +123,15 @@ export const MainPage = () => {
                     getOptionLabel={(option) => option.name}
                     groupBy={(option) => service.getGenerationNameFromId(option.generation)}
                     sx={{ width: 300 }}
+                    onInputChange={async (event, value) => {
+                        setGuessInputValue(value);
+                    }}
                     renderInput={(params) => 
                         <TextField {...params} 
                             label="Pokemon" 
-                            onKeyDown={handleKeydown}
                             disabled={inputDisabled}
                             className={"guessInput pokemonText"}
-                            value={guessInputValue}
-                            onChange={handleChange}/>}
+                            value={guessInputValue}/>}
                 />
               <button 
                 disabled={inputDisabled}
