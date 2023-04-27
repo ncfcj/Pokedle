@@ -1,5 +1,7 @@
 import pokemonJson from "../data/pokemon.json"
+import { Generations } from "../enums/Generations";
 import { PokemonData } from "../types/PokemonData";
+import { PokemonJson } from "../types/PokemonJson";
 
 export class PokemonService {
     totalPokemonNumber = 809;
@@ -52,5 +54,13 @@ export class PokemonService {
     getPokemonId = (pokemon: any) => {
         const index = pokemonJson.indexOf(pokemon) + 1;
         return index;
+    }
+
+    getPokemonList = () => {
+        return pokemonJson as PokemonJson[];
+    }
+
+    getGenerationNameFromId = (generationId : number) => {
+        return Generations[generationId];
     }
 }

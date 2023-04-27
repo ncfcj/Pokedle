@@ -6,6 +6,9 @@ import { GuessLineList } from "../GuessLineList/GuessLineList";
 import axios from "axios";
 import { PokemonSpecies } from "../../types/PokemonSpecies";
 import { VictoryDialog } from "../Dialog/VictoryDialog";
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import { PokemonJson } from "../../types/PokemonJson";
 
 export const MainPage = () => {
     const [guessLineList, setGuessLineList] = useState<PokemonData[]>([] as PokemonData[]);
@@ -17,6 +20,7 @@ export const MainPage = () => {
     const [dialogIsOpen, setDialogIsOpen] = useState<boolean>(false);
     const [resetGame, setResetGame] = useState<number>(0);
     const [lastGuess, setLastGuess] = useState<string>("");
+    const [pokemonList, setPokemonList] = useState<PokemonJson[]>([] as PokemonJson[]);
     
     const service = new PokemonService();
 
@@ -104,18 +108,30 @@ export const MainPage = () => {
     }
 
     useEffect(() => {
+        const service = new PokemonService();
+        setPokemonList(service.getPokemonList() as PokemonJson[]);
         getTargetPokemonData();
     }, []);
 
     return(
         <div className='container'>
             <div className="nameInput">
-              <input 
-                className="guessInput pokemonText" 
-                disabled={inputDisabled}
-                onChange={handleChange} 
-                value={guessInputValue}
-                onKeyDown={handleKeydown}/>
+                <Autocomplete
+                    disablePortal
+                    id="guessInput"
+                    options={pokemonList}
+                    getOptionLabel={(option) => option.name}
+                    groupBy={(option) => service.getGenerationNameFromId(option.generation)}
+                    sx={{ width: 300 }}
+                    renderInput={(params) => 
+                        <TextField {...params} 
+                            label="Pokemon" 
+                            onKeyDown={handleKeydown}
+                            disabled={inputDisabled}
+                            className={"guessInput pokemonText"}
+                            value={guessInputValue}
+                            onChange={handleChange}/>}
+                />
               <button 
                 disabled={inputDisabled}
                 onClick={guessPokemon} 
