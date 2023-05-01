@@ -131,28 +131,28 @@ export const GuessLine = (props : GuessLineComponent) => {
 
     return(
         <div className="guess">
-            <div className={`hint justifyWrappedText`}>
+            <div className={`hint pokemonSprite justifyWrappedText`}>
                 <img className="spriteImg" src={getSpritePathById(props.guessPokemonData.id)}></img>
             </div>
-            <div className={`name justifyWrappedText ${verifyPokemonName(props.guessPokemonData.name)}`}>
+            <div className={`name pokemonName justifyWrappedText ${verifyPokemonName(props.guessPokemonData.name)}`}>
                 <p className="pokemonText wrap">{props.guessPokemonData.name}</p>
             </div>
-            <div className={`hint justifyWrappedText ${verifyPokemonTypes(props.guessPokemonData.types)}`}>
+            <div className={`hint pokemonTypes justifyWrappedText ${verifyPokemonTypes(props.guessPokemonData.types)}`}>
                 <p className="pokemonText wrap">{handleTypes(props.guessPokemonData.types)}</p>
             </div>
-            <div className={`hint justifyWrappedText ${verifyGeneration(props.guessPokemonData.generation)}`}>
+            <div className={`hint pokemonRegion justifyWrappedText ${verifyGeneration(props.guessPokemonData.generation)}`}>
                 <p className="pokemonText wrap">{getGeneration(props.guessPokemonData.generation)}</p>
             </div>
-            <div className={`hint justifyWrappedText ${verifyHabitat()}`}>
+            <div className={`hint pokemonHabitat justifyWrappedText ${verifyHabitat()}`}>
                 <p className="pokemonText wrap">{writeHabitat()}</p>
             </div>
-            <div className={`hint justifyWrappedText ${verifyShape()}`}>
+            <div className={`hint pokemonShape justifyWrappedText ${verifyShape()}`}>
                 <p className="pokemonText wrap">{writeShape()}</p>
             </div>
-            <div className={`hint justifyWrappedText ${verifyColor()}`}>
+            <div className={`hint pokemonColor justifyWrappedText ${verifyColor()}`}>
                 <p className="pokemonText wrap">{writeColor()}</p>
             </div>
-            <div className={`lastHint justifyWrappedText ${verifyLegendary(props.guessPokemonData.isLegendary)}`}>
+            <div className={`lastHint pokemonRarity justifyWrappedText ${verifyLegendary(props.guessPokemonData.isLegendary)}`}>
                 <p className="pokemonText wrap">{props.guessPokemonData.isLegendary ? "Legendary" : "Normal"}</p>
             </div>
         </div>

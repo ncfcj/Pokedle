@@ -2,9 +2,97 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
-    width: 100%;
-    height: 80%;
+    width: 90%;
+    height: 100%;
     overflow-y: scroll;
     align-content: flex-start;
-    gap: 0.2%;
+    gap: 1%;
+}
+
+.header{
+    width: 100%;
+    height: 5%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid black;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.pokemonImageHeader{
+    width: 12%;
+}
+
+.pokemonNameHeader{
+    width: 11%;
+}
+
+.headerItem{
+    width: 12.685%;
+}
+
+.lastHeaderItem{
+    width: 12.1%;
+}
+
+
+/* Media queries */
+@media(max-width: 1440px){
+}
+
+@media(max-width: 1024px){
+    
+}
+
+@media(max-width: 768px){
+    
+}
+
+@media(max-width: 425px){
+    .header{
+        flex-flow: row wrap;
+        height: 10%;
+    }
+
+    .pokemonImageHeader{
+        width: 25%;
+    }
+
+    .pokemonNameHeader{
+        width: 25%;
+    }
+
+    .pokemonTypesHeader{
+        width: 25%;
+    }
+
+    .pokemonRegionHeader{
+        width: 25%;
+    }
+
+    .pokemonHabitatHeader{
+        width: 25%;
+    }
+
+    .pokemonShapeHeader{
+        width: 25%;
+    }
+
+    .pokemonColorHeader{
+        width: 25%;
+    }
+
+    .pokemonRarityHeader{
+        width: 25%;
+    }
+}
+
+@media(max-width: 375px){
+    
+}
+
+@media(max-width: 320px){
+    
 }

@@ -4,15 +4,16 @@
     justify-content: baseline;
     align-items: center;
     border: 2px solid black;
-    width: 80%;
+    width: 100%;
     height: 13%;
+    min-height: 6rem;
     border-radius: 4px;
 }
 
 .name{
     height: 100%;
     width: 11%;
-    border-right: 1px solid black;
+    border-right: 2px solid black;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,12 +22,12 @@
 .hint{
     height: 100%;
     width: 12.685%;
-    border-right: 1px solid black;
+    border-right: 2px solid black;
 }
 
 .lastHint{
     height: 100%;
-    width: 12.5%;
+    width: 12.1%;
     border-radius: 0px 4px 4px 0px;
 }
 
@@ -63,4 +64,198 @@
 .spriteImg{
     transform: scale(1.7);
     background-color: white;
+}
+
+/* Media queries */
+@media(max-width: 1440px){
+    .lastHint{
+        width: 11.9%;
+    }
+}
+
+@media(max-width: 1024px){
+    .lastHint{
+        width: 11.5%;
+    }
+
+    .pokemonText{
+        font-size: 0.65rem;
+    }
+}
+
+@media(max-width: 768px){
+    .lastHint{
+        width: 11%;
+    }
+
+    .pokemonText{
+        font-size: 0.49rem;
+    }
+
+    .guess{
+        height: 8%;
+        min-height: 5rem;
+    }
+}
+
+@media(max-width: 425px){
+    .lastHint{
+        width: 25.2%;
+        height: 50%;
+        border-radius: 0px 0px 4px 0px;
+        border-top: 1px solid black;
+    }
+
+    .hint{
+        width: 24%;
+        height: 50%;
+    }
+
+    .pokemonText{
+        font-size: 0.65rem;
+    }
+
+    .pokemonHabitat{
+        border-top: 1px solid black;
+    }
+
+    .pokemonRegion{
+        width: 25.3%;
+        border: 0px solid transparent !important;
+    }
+
+    .pokemonShape{
+        width: 25%;
+        border-top: 1px solid black;
+    }
+
+    .pokemonColor{
+        width: 24%;
+        border-top: 1px solid black;
+    }
+
+    .guess{
+        flex-flow: row wrap;
+        min-height: 5rem;
+        border: 2px solid black;
+        height: 35%;
+    }
+
+    .spriteImg{
+        transform: scale(2);
+        background-color: white;
+    }
+
+    .name{
+        width: 25%;
+        height: 50%;
+    }
+}
+
+@media(max-width: 375px){
+    .lastHint{
+        width: 25%;
+        height: 50%;
+        border-radius: 0px 0px 4px 0px;
+        border-top: 1px solid black;
+    }
+
+    .hint{
+        width: 24%;
+        height: 50%;
+    }
+
+    .pokemonText{
+        font-size: 0.65rem;
+    }
+
+    .pokemonHabitat{
+        border-top: 1px solid black;
+    }
+
+    .pokemonRegion{
+        width: 25%;
+        border: 0px solid transparent !important;
+    }
+
+    .pokemonShape{
+        width: 25%;
+        border-top: 1px solid black;
+    }
+
+    .pokemonColor{
+        width: 24%;
+        border-top: 1px solid black;
+    }
+
+    .guess{
+        flex-flow: row wrap;
+        min-height: 5rem;
+        border: 2px solid black;
+        height: 35%;
+    }
+
+    .spriteImg{
+        transform: scale(2);
+        background-color: white;
+    }
+
+    .name{
+        width: 25%;
+        height: 50%;
+    }
+}
+
+@media(max-width: 320px){
+    .lastHint{
+        width: 24.6%;
+        height: 50%;
+        border-radius: 0px 0px 4px 0px;
+        border-top: 1px solid black;
+    }
+
+    .hint{
+        width: 24%;
+        height: 50%;
+    }
+
+    .pokemonText{
+        font-size: 0.6rem;
+    }
+
+    .pokemonHabitat{
+        border-top: 1px solid black;
+    }
+
+    .pokemonRegion{
+        width: 25%;
+        border: 0px solid transparent !important;
+    }
+
+    .pokemonShape{
+        width: 25%;
+        border-top: 1px solid black;
+    }
+
+    .pokemonColor{
+        width: 24%;
+        border-top: 1px solid black;
+    }
+
+    .guess{
+        flex-flow: row wrap;
+        min-height: 5rem;
+        border: 2px solid black;
+        height: 35%;
+    }
+
+    .spriteImg{
+        transform: scale(1.5);
+        background-color: white;
+    }
+
+    .name{
+        width: 24.8%;
+        height: 50%;
+    }
 }

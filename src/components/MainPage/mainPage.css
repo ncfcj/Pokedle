@@ -10,8 +10,9 @@
   justify-content: center;
   align-items: center;
   flex-flow: column;
-  gap: 1%;
+  gap: 10%;
   background-color: white;
+  margin-top: 9%;
 }
 
 .nameInput{
@@ -28,4 +29,26 @@
 
 .guessInputButton:hover{
   border: 1px solid black;
+}
+
+
+/* Media queries */
+@media(max-width: 425px){
+  .container{
+    gap: 5%;
+  }
+}
+
+@media(max-width: 375px){
+  .container{
+    gap: 3%;
+  }
+
+  .nameInput{
+    width: 94%;
+  }
+}
+
+@media(max-width: 320px){
+
 }
