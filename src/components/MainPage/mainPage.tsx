@@ -21,6 +21,7 @@ export const MainPage = () => {
     const [resetGame, setResetGame] = useState<number>(0);
     const [lastGuess, setLastGuess] = useState<string>("");
     const [pokemonList, setPokemonList] = useState<PokemonJson[]>([] as PokemonJson[]);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     
     const service = new PokemonService();
 
@@ -35,13 +36,13 @@ export const MainPage = () => {
 
     const guessPokemon = () => {
         let guess = guessNumber + 1;
-        setGuessNumber(guess);
-
+        
         const pokemon = service.getPokemonByName(guessInputValue, guess);
         if (pokemon == undefined) {
             alert("There isn't a pokemon with this name, please try again !");
             return;
         }
+        setGuessNumber(guess);
 
         if (guessLineList.find(x => x.name == pokemon.name)) {
             alert("You already guessed this pokemon!");
@@ -64,6 +65,7 @@ export const MainPage = () => {
 
         // clear the input value before a new guess
         setGuessInputValue("");
+        setIsOpen(false);
 
         setTimeout(() => {
             if (targetPokemonData.name.trim().toUpperCase() == pokemon.name.trim().toUpperCase()){
@@ -75,10 +77,6 @@ export const MainPage = () => {
         }, 300);
         
     }
-
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setGuessInputValue(e.target.value);
-    };
 
     const getTargetPokemonSpecies = async (pokemonId : number) => {
         const res = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`);
@@ -99,13 +97,8 @@ export const MainPage = () => {
         let resetGameNumber = resetGame;
         setResetGame(resetGameNumber++);
         getTargetPokemonData();
+        setGuessInputValue("");
     };
-
-    const handleKeydown = (event: React.KeyboardEvent<HTMLElement>) => {
-        if (event.key === 'Enter') {
-            guessPokemon();
-        }
-    }
 
     useEffect(() => {
         const service = new PokemonService();
@@ -117,7 +110,7 @@ export const MainPage = () => {
         <div className='container'>
             <div className="nameInput">
                 <Autocomplete
-                    disablePortal
+                    clearOnBlur={false}
                     id="guessInput"
                     options={pokemonList}
                     getOptionLabel={(option) => option.name}
@@ -125,13 +118,15 @@ export const MainPage = () => {
                     sx={{ width: 300 }}
                     onInputChange={async (event, value) => {
                         setGuessInputValue(value);
+                        value == '' ? setIsOpen(false) : setIsOpen(true);
                     }}
+                    inputValue={guessInputValue}
+                    open={isOpen}
                     renderInput={(params) => 
                         <TextField {...params} 
                             label="Pokemon" 
                             disabled={inputDisabled}
-                            className={"guessInput pokemonText"}
-                            value={guessInputValue}/>}
+                            className={"guessInput pokemonText"}/>}
                 />
               <button 
                 disabled={inputDisabled}
