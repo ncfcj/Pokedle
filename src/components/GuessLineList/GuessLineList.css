@@ -97,3 +97,15 @@
 @media(max-width: 320px){
     
 }
+
+@media(max-width: 268px){
+    .pokemonImageHeader, .pokemonNameHeader, .headerItem, .lastHeaderItem{
+        font-size: 0.5rem !important;
+    }
+}
+
+@media(max-width: 230px){
+    .pokemonImageHeader, .pokemonNameHeader, .headerItem, .lastHeaderItem{
+        font-size: 0.4rem !important;
+    }
+}

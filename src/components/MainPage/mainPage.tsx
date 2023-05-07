@@ -84,8 +84,8 @@ export const MainPage = () => {
     }
 
     const setNewPokemonInLocalStorage = () => {
-        var totalOfPokemonsInGen1 = 151;
-        localStorage.setItem("pokemon", (Math.floor(Math.random() * totalOfPokemonsInGen1) + 1).toString());
+        var totalOfPokemons = 251;
+        localStorage.setItem("pokemon", (Math.floor(Math.random() * totalOfPokemons) + 1).toString());
     }
 
     const handleClose = () => {
