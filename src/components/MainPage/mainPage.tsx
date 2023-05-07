@@ -21,7 +21,6 @@ export const MainPage = () => {
     const [resetGame, setResetGame] = useState<number>(0);
     const [lastGuess, setLastGuess] = useState<string>("");
     const [pokemonList, setPokemonList] = useState<PokemonJson[]>([] as PokemonJson[]);
-    const [isOpen, setIsOpen] = useState<boolean>(false);
     
     const service = new PokemonService();
 
@@ -65,7 +64,8 @@ export const MainPage = () => {
 
         // clear the input value before a new guess
         setGuessInputValue("");
-        setIsOpen(false);
+        let autoCompleteClearButton: HTMLElement = document.getElementsByClassName('MuiAutocomplete-clearIndicator')[0] as HTMLElement;
+        autoCompleteClearButton.click();
 
         setTimeout(() => {
             if (targetPokemonData.name.trim().toUpperCase() == pokemon.name.trim().toUpperCase()){
@@ -111,6 +111,7 @@ export const MainPage = () => {
             <div className="nameInput">
                 <Autocomplete
                     clearOnBlur={false}
+                    blurOnSelect={"mouse"}
                     id="guessInput"
                     options={pokemonList}
                     getOptionLabel={(option) => option.name}
@@ -118,20 +119,19 @@ export const MainPage = () => {
                     sx={{ width: 300 }}
                     onInputChange={async (event, value) => {
                         setGuessInputValue(value);
-                        value == '' ? setIsOpen(false) : setIsOpen(true);
                     }}
                     inputValue={guessInputValue}
-                    open={isOpen}
                     renderInput={(params) => 
                         <TextField {...params} 
                             label="Pokemon" 
                             disabled={inputDisabled}
-                            className={"guessInput pokemonText"}/>}
+                            className={"guessInput pokemonText"}
+                        />}
                 />
-              <button 
-                disabled={inputDisabled}
-                onClick={guessPokemon} 
-                className="guessInputButton">Guess</button>
+            <button 
+              disabled={inputDisabled}
+              onClick={guessPokemon} 
+              className="guessInputButton">Guess</button>
             </div>
             <GuessLineList 
                 GuessLineList={guessLineList}
