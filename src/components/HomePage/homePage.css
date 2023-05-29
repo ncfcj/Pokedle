@@ -1,0 +1,25 @@
+.homePageContainer{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-flow: column nowrap;
+    height: 100%;
+}
+
+.siteTitle{
+    font-family: Sword;
+}
+
+.gameModeButtonContainer{
+    height: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column nowrap;
+    gap: 15%;
+}
+
+.gameModeButton{
+    background-color: red;
+    color:white;
+}

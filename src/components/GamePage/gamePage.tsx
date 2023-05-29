@@ -1,16 +1,18 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import "./mainPage.css";
-import { PokemonService } from "../../services/PokemonService";
-import { PokemonData } from "../../types/PokemonData";
-import { GuessLineList } from "../GuessLineList/GuessLineList";
+import {useEffect, useState} from "react";
+import "./gamePage.css";
+import {PokemonService} from "../../services/PokemonService";
+import {PokemonData} from "../../types/PokemonData";
+import {GuessLineList} from "../GuessLineList/GuessLineList";
 import axios from "axios";
-import { PokemonSpecies } from "../../types/PokemonSpecies";
-import { VictoryDialog } from "../Dialog/VictoryDialog";
+import {PokemonSpecies} from "../../types/PokemonSpecies";
+import {VictoryDialog} from "../Dialog/VictoryDialog";
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { PokemonJson } from "../../types/PokemonJson";
+import {PokemonJson} from "../../types/PokemonJson";
+import {Link, useLocation, useNavigate} from "react-router-dom";
+import {GameMode} from "../../enums/GameMode";
 
-export const MainPage = () => {
+export const GamePage = () => {
     const [guessLineList, setGuessLineList] = useState<PokemonData[]>([] as PokemonData[]);
     const [targetPokemonData, setTargetPokemonData] = useState<PokemonData>({} as PokemonData);
     const [guessInputValue, setGuessInputValue] = useState<string>("");
@@ -21,7 +23,14 @@ export const MainPage = () => {
     const [resetGame, setResetGame] = useState<number>(0);
     const [lastGuess, setLastGuess] = useState<string>("");
     const [pokemonList, setPokemonList] = useState<PokemonJson[]>([] as PokemonJson[]);
-    
+    const [gameMode, setGameMode] = useState<GameMode>(GameMode.Classic);
+    const [lives, setLives] = useState<number>(5);
+
+    //#region ReactRouter Location Handling
+    const location = useLocation();
+    const navigate = useNavigate();
+    //#endregion
+
     const service = new PokemonService();
 
     const getTargetPokemonData = () => {
@@ -31,6 +40,11 @@ export const MainPage = () => {
 
         setTargetPokemonData(pokemonData);
         getTargetPokemonSpecies(pokemonData.id);
+    }
+
+    const resetLivesGame = () => {
+        setLives(5);
+        handleClose();
     }
 
     const guessPokemon = () => {
@@ -74,6 +88,12 @@ export const MainPage = () => {
                 setNewPokemonInLocalStorage();
                 return;
             }
+            else if (gameMode == GameMode.Lives){
+                setLives(lives - 1);
+                if (lives - 1 == 0){
+                    window.confirm("No lives left, You lost ! :( Try Again ?") ? resetLivesGame() : navigate("/");
+                }
+            }
         }, 300);
         
     }
@@ -86,6 +106,47 @@ export const MainPage = () => {
     const setNewPokemonInLocalStorage = () => {
         var totalOfPokemons = 251;
         localStorage.setItem("pokemon", (Math.floor(Math.random() * totalOfPokemons) + 1).toString());
+    }
+
+    const verifyGameMode = () => {
+        if (location.pathname.includes("modes/lives")){
+            setGameMode(GameMode.Lives);
+        }
+
+        if (location.pathname.includes("modes/classic")){
+            setGameMode(GameMode.Classic);
+        }
+    }
+
+    const hideHints = () => {
+        if (gameMode == GameMode.Classic)
+            return "hide";
+
+        return "";
+    }
+
+    const firstLetterToUpper = (word : string) => {
+        if (word == undefined || word == "" || word == " ")
+            return "";
+
+        var firstLetter = word[0].toUpperCase();
+        var restOfWord = word.slice(1);
+
+        return firstLetter + restOfWord;
+    }
+
+    const getTargetPokemonTypes = () => {
+        if (targetPokemonData.types == undefined)
+            return "";
+
+        return targetPokemonData.types.map(x => { return firstLetterToUpper(x) }).join(", ");
+    }
+
+    const getTargetPokemonColor = () => {
+        if (targetPokemonSpecies.color == undefined)
+            return "";
+
+        return firstLetterToUpper(targetPokemonSpecies.color?.name);
     }
 
     const handleClose = () => {
@@ -101,6 +162,7 @@ export const MainPage = () => {
     };
 
     useEffect(() => {
+        verifyGameMode();
         const service = new PokemonService();
         setPokemonList(service.getPokemonList() as PokemonJson[]);
         getTargetPokemonData();
@@ -108,6 +170,13 @@ export const MainPage = () => {
 
     return(
         <div className='container'>
+            <div className={"return"}>
+                <Link to={"/"} >
+                    <button className={"returnButton"} title="Return to main menu !">
+                        <img className={"returnButtonImage"} src={"/return.png"} alt={"Return to main menu !"}/>
+                    </button>
+                </Link>
+            </div>
             <div className="nameInput">
                 <Autocomplete
                     clearOnBlur={false}
@@ -128,10 +197,15 @@ export const MainPage = () => {
                             className={"guessInput pokemonText"}
                         />}
                 />
-            <button 
-              disabled={inputDisabled}
-              onClick={guessPokemon} 
-              className="guessInputButton">Guess</button>
+                <button
+                    disabled={inputDisabled}
+                    onClick={guessPokemon}
+                    className="guessInputButton">Guess</button>
+            </div>
+            <div className={`hints ${hideHints()}`}>
+                <div>Lives: {lives} Lives</div>
+                <div>Type(s): {getTargetPokemonTypes()}</div>
+                <div>Color: {getTargetPokemonColor()}</div>
             </div>
             <GuessLineList 
                 GuessLineList={guessLineList}

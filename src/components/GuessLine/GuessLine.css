@@ -1,7 +1,6 @@
 .guess{
     display: flex;
     flex-flow: column wrap;
-    justify-content: baseline;
     align-items: center;
     border: 2px solid black;
     width: 100%;

@@ -63,4 +63,9 @@ export class PokemonService {
     getGenerationNameFromId = (generationId : number) => {
         return Generations[generationId];
     }
+
+    clearLocalStorage = () => {
+        localStorage.setItem("date", "");
+        localStorage.setItem("pokemon", "");
+    }
 }

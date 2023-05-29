@@ -10,9 +10,9 @@
   justify-content: center;
   align-items: center;
   flex-flow: column;
-  gap: 10%;
+  gap: 5%;
   background-color: white;
-  margin-top: 9%;
+  margin-top: 2%;
 }
 
 .nameInput{
@@ -29,6 +29,36 @@
 
 .guessInputButton:hover{
   border: 1px solid black;
+}
+
+.return{
+  display: flex;
+  justify-content: flex-start;
+  width: 95%;
+  margin-left: 1%;
+}
+
+.returnButton{
+  background-color: red;
+  color: white;
+  max-width: 10%;
+}
+
+.returnButtonImage{
+  width: 100%;
+  height: 100%;
+}
+
+.hints{
+  display: flex;
+  justify-content: center;
+  flex-flow: column;
+  gap: 10%;
+  height: 2%;
+}
+
+.hide{
+  display: none;
 }
 
 
@@ -48,5 +78,7 @@
     width: 94%;
   }
 }
+
+
 
 

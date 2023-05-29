@@ -75,3 +75,9 @@ button:focus-visible {
    url("/fonts/PokemonGb.ttf") format("truetype");
   font-weight: bold;
 }
+
+@font-face {
+  font-family: "Sword";
+  src: local("Sword"),
+  url("/fonts/Sword.otf") format("truetype");
+}

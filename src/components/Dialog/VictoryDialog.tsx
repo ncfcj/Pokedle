@@ -1,5 +1,6 @@
 import "./VictoryDialog.css";
 import Dialog from '@mui/material/Dialog';
+import {Link} from "react-router-dom";
 
 type VictoryDialogComponent = {
     open: boolean;
@@ -23,10 +24,15 @@ export const VictoryDialog = (props : VictoryDialogComponent) => {
             <div className="messageContainer">
                 <h2 className="title">{"Congratulations !"}</h2>
                 <p className="message">{message}</p>
-                <button
-                className="dialogButton"
-                onClick={() => handleButtonClick(message)}
-                >Try Again !</button>
+                <div className={"dialogButtonContainer"}>
+                    <button
+                        className="dialogButton"
+                        onClick={() => handleButtonClick(message)}
+                    >Try Again !</button>
+                    <Link to={"/"} className={"dialogLink"}>
+                        Return to Main Menu!
+                    </Link>
+                </div>
             </div>
         </Dialog>
     )
