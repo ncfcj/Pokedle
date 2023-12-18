@@ -4,22 +4,48 @@
     align-content: center;
     flex-flow: column nowrap;
     height: 100%;
+    gap: 10%;
 }
 
 .siteTitle{
-    font-family: Sword;
+    font-family: PokemonSolid, serif;
+    color: #ffcc03;
+    -webkit-text-stroke: 3px #3157a9; /* width and color */
+    font-size: 60px;
+    letter-spacing: .2rem;
+    align-self: flex-end;
+    margin: 0;
+}
+
+.titleContainer{
+    flex-flow: row nowrap;
+    display: flex;
 }
 
 .gameModeButtonContainer{
-    height: 20%;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-flow: column nowrap;
-    gap: 15%;
+    gap: 35%;
+    height: 10%;
 }
 
 .gameModeButton{
     background-color: red;
     color:white;
+}
+
+.footer{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+}
+
+.githubSvg{
+    display: flex;
+    font-weight: bold;
+    gap: 2%;
+    width: 100%;
+    justify-content: space-evenly;
 }

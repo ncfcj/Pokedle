@@ -1,10 +1,10 @@
 .pokemonText{
-  font-family: PokemonGb;
+  font-family: PokemonGb, serif;
   color:black;
 }
 
 .container{
-  height: 100%;
+  height: 85%;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -12,7 +12,6 @@
   flex-flow: column;
   gap: 5%;
   background-color: white;
-  margin-top: 2%;
 }
 
 .nameInput{
@@ -32,33 +31,57 @@
 }
 
 .return{
-  display: flex;
-  justify-content: flex-start;
   width: 95%;
-  margin-left: 1%;
 }
 
 .returnButton{
   background-color: red;
   color: white;
-  max-width: 10%;
+  max-width: 93%;
 }
 
 .returnButtonImage{
-  width: 100%;
-  height: 100%;
+  width: 1.2rem;
 }
 
 .hints{
   display: flex;
   justify-content: center;
   flex-flow: column;
-  gap: 10%;
-  height: 2%;
+  gap: 1%;
+  height: 13%;
+  margin-bottom: 1.5%;
 }
 
 .hide{
   display: none;
+}
+
+.gameContainer{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.guessContainer{
+  display: flex;
+  height: 6.4%;
+  margin-top: 2%;
+  gap: 2%;
+}
+
+.hintLine{
+  display: flex;
+  gap: 0.1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.heart{
+  transform: scale(0.6);
 }
 
 

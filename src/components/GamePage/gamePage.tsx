@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, KeyboardEvent} from "react";
 import "./gamePage.css";
 import {PokemonService} from "../../services/PokemonService";
 import {PokemonData} from "../../types/PokemonData";
@@ -11,6 +11,7 @@ import TextField from '@mui/material/TextField';
 import {PokemonJson} from "../../types/PokemonJson";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {GameMode} from "../../enums/GameMode";
+import HeartSvg from "../../assets/heart.svg";
 
 export const GamePage = () => {
     const [guessLineList, setGuessLineList] = useState<PokemonData[]>([] as PokemonData[]);
@@ -24,7 +25,8 @@ export const GamePage = () => {
     const [lastGuess, setLastGuess] = useState<string>("");
     const [pokemonList, setPokemonList] = useState<PokemonJson[]>([] as PokemonJson[]);
     const [gameMode, setGameMode] = useState<GameMode>(GameMode.Classic);
-    const [lives, setLives] = useState<number>(5);
+    const [lives, setLives] = useState<number[]>([1, 1, 1, 1, 1] as number[]);
+    const [render, setRender] = useState<number>(0);
 
     //#region ReactRouter Location Handling
     const location = useLocation();
@@ -43,7 +45,7 @@ export const GamePage = () => {
     }
 
     const resetLivesGame = () => {
-        setLives(5);
+        setLives([1,1,1,1,1]);
         handleClose();
     }
 
@@ -52,7 +54,7 @@ export const GamePage = () => {
         
         const pokemon = service.getPokemonByName(guessInputValue, guess);
         if (pokemon == undefined) {
-            alert("There isn't a pokemon with this name, please try again !");
+            alert("There isn't a pokemon with this name, please try again!");
             return;
         }
         setGuessNumber(guess);
@@ -89,13 +91,14 @@ export const GamePage = () => {
                 return;
             }
             else if (gameMode == GameMode.Lives){
-                setLives(lives - 1);
-                if (lives - 1 == 0){
+                lives.pop();
+
+                if (lives.length == 0){
                     window.confirm("No lives left, You lost ! :( Try Again ?") ? resetLivesGame() : navigate("/");
                 }
+                setRender(render + 1);
             }
         }, 300);
-        
     }
 
     const getTargetPokemonSpecies = async (pokemonId : number) => {
@@ -139,7 +142,10 @@ export const GamePage = () => {
         if (targetPokemonData.types == undefined)
             return "";
 
-        return targetPokemonData.types.map(x => { return firstLetterToUpper(x) }).join(", ");
+        if (targetPokemonData.types.length > 2)
+            return targetPokemonData.types.map(x => { return firstLetterToUpper(x) }).join(", ");
+
+        return firstLetterToUpper(targetPokemonData.types[0]);
     }
 
     const getTargetPokemonColor = () => {
@@ -161,61 +167,75 @@ export const GamePage = () => {
         setGuessInputValue("");
     };
 
+    const handleInputEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key == "Enter")
+            guessPokemon();
+    }
+
     useEffect(() => {
         verifyGameMode();
         const service = new PokemonService();
         setPokemonList(service.getPokemonList() as PokemonJson[]);
         getTargetPokemonData();
-    }, []);
+    }, [render]);
 
     return(
         <div className='container'>
-            <div className={"return"}>
-                <Link to={"/"} >
-                    <button className={"returnButton"} title="Return to main menu !">
-                        <img className={"returnButtonImage"} src={"/return.png"} alt={"Return to main menu !"}/>
-                    </button>
-                </Link>
+            <div className="guessContainer">
+                <div className="return">
+                    <Link to={"/"} >
+                        <button className={"returnButton"} title="Return to main menu!">
+                            <img className={"returnButtonImage"} src={"/return.png"} alt={"Return to main menu!"}/>
+                        </button>
+                    </Link>
+                </div>
+                <div className="nameInput">
+                    <Autocomplete
+                        onKeyUp={handleInputEnter}
+                        clearOnBlur={false}
+                        blurOnSelect={"mouse"}
+                        id="guessInput"
+                        options={pokemonList}
+                        getOptionLabel={(option) => option.name}
+                        groupBy={(option) => service.getGenerationNameFromId(option.generation)}
+                        sx={{ width: 300 }}
+                        onInputChange={async (event, value) => {
+                            setGuessInputValue(value);
+                        }}
+                        inputValue={guessInputValue}
+                        renderInput={(params) =>
+                            <TextField {...params}
+                                       label="Pokemon"
+                                       disabled={inputDisabled}
+                                       className={"guessInput pokemonText"}
+                            />}
+                    />
+                    <button
+                        disabled={inputDisabled}
+                        onClick={guessPokemon}
+                        className="guessInputButton">Guess</button>
+                </div>
             </div>
-            <div className="nameInput">
-                <Autocomplete
-                    clearOnBlur={false}
-                    blurOnSelect={"mouse"}
-                    id="guessInput"
-                    options={pokemonList}
-                    getOptionLabel={(option) => option.name}
-                    groupBy={(option) => service.getGenerationNameFromId(option.generation)}
-                    sx={{ width: 300 }}
-                    onInputChange={async (event, value) => {
-                        setGuessInputValue(value);
-                    }}
-                    inputValue={guessInputValue}
-                    renderInput={(params) => 
-                        <TextField {...params} 
-                            label="Pokemon" 
-                            disabled={inputDisabled}
-                            className={"guessInput pokemonText"}
-                        />}
+            <div className="gameContainer">
+                <div className={`hints ${hideHints()}`}>
+                    <div className="hintLine">
+                        Lives: {lives.map(() => {
+                            return <img key={Math.random() * (100)} className="heart" src={HeartSvg} alt="Heart"/>
+                        })}
+                    </div>
+                    <div className="hintLine">Type(s): {getTargetPokemonTypes()}</div>
+                    <div className="hintLine">Color: {getTargetPokemonColor()}</div>
+                </div>
+                <GuessLineList
+                    GuessLineList={guessLineList}
+                    TargetPokemonData={targetPokemonData}
+                    TargetPokemonSpecies={targetPokemonSpecies}></GuessLineList>
+                <VictoryDialog
+                    open={dialogIsOpen}
+                    onClose={handleClose}
+                    message={`You have guessed ${lastGuess} in ${guessNumber} tries!`}
                 />
-                <button
-                    disabled={inputDisabled}
-                    onClick={guessPokemon}
-                    className="guessInputButton">Guess</button>
             </div>
-            <div className={`hints ${hideHints()}`}>
-                <div>Lives: {lives} Lives</div>
-                <div>Type(s): {getTargetPokemonTypes()}</div>
-                <div>Color: {getTargetPokemonColor()}</div>
-            </div>
-            <GuessLineList 
-                GuessLineList={guessLineList}
-                TargetPokemonData={targetPokemonData}
-                TargetPokemonSpecies={targetPokemonSpecies}></GuessLineList>
-            <VictoryDialog
-                open={dialogIsOpen}
-                onClose={handleClose}
-                message={`You have guessed ${lastGuess} in ${guessNumber} tries !`}
-            />
       </div>
     )
 }
