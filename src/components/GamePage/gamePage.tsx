@@ -1,17 +1,23 @@
-import {useEffect, useState, KeyboardEvent} from "react";
+import {useEffect, useState, KeyboardEvent, SyntheticEvent} from "react";
 import "./gamePage.css";
 import {PokemonService} from "../../services/PokemonService";
 import {PokemonData} from "../../types/PokemonData";
 import {GuessLineList} from "../GuessLineList/GuessLineList";
 import axios from "axios";
 import {PokemonSpecies} from "../../types/PokemonSpecies";
-import {VictoryDialog} from "../Dialog/VictoryDialog";
+import {EndGameDialog} from "../EndGameDialog/EndGameDialog";
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import {PokemonJson} from "../../types/PokemonJson";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {GameMode} from "../../enums/GameMode";
 import HeartSvg from "../../assets/heart.svg";
+import Alert from '@mui/material/Alert';
+import {Collapse, IconButton, Snackbar} from "@mui/material";
+
+function CloseIcon(props: { fontSize: string }) {
+    return null;
+}
 
 export const GamePage = () => {
     const [guessLineList, setGuessLineList] = useState<PokemonData[]>([] as PokemonData[]);
@@ -27,6 +33,11 @@ export const GamePage = () => {
     const [gameMode, setGameMode] = useState<GameMode>(GameMode.Classic);
     const [lives, setLives] = useState<number[]>([1, 1, 1, 1, 1] as number[]);
     const [render, setRender] = useState<number>(0);
+    const [alertOpen, setAlertOpen] = useState<boolean>(false);
+    const [alertMessage, setAlertMessage] = useState<string>("");
+    const [endGameDialogMessage, setEndGameDialogMessage] = useState<string>("");
+    const [endGameDialogTitle, setEndGameDialogTitle] = useState<string>("");
+
 
     //#region ReactRouter Location Handling
     const location = useLocation();
@@ -54,13 +65,15 @@ export const GamePage = () => {
         
         const pokemon = service.getPokemonByName(guessInputValue, guess);
         if (pokemon == undefined) {
-            alert("There isn't a pokemon with this name, please try again!");
+            setAlertMessage("There isn't a pokemon with this name, please try again!");
+            setAlertOpen(true);
             return;
         }
         setGuessNumber(guess);
 
         if (guessLineList.find(x => x.name == pokemon.name)) {
-            alert("You already guessed this pokemon!");
+            setAlertMessage("You already guessed this pokemon!");
+            setAlertOpen(true);
             return;
         }
                 
@@ -85,17 +98,26 @@ export const GamePage = () => {
 
         setTimeout(() => {
             if (targetPokemonData.name.trim().toUpperCase() == pokemon.name.trim().toUpperCase()){
+                setEndGameDialogTitle("Congratulations!")
+                setEndGameDialogMessage(`You have guessed ${targetPokemonData.name} in ${guessNumber + 1} tries!`);
                 setDialogIsOpen(true);
                 setInputDisabled(true);
                 setNewPokemonInLocalStorage();
+                setGuessNumber(0);
                 return;
             }
             else if (gameMode == GameMode.Lives){
                 lives.pop();
 
                 if (lives.length == 0){
-                    window.confirm("No lives left, You lost ! :( Try Again ?") ? resetLivesGame() : navigate("/");
+                    setEndGameDialogTitle("Too Bad!")
+                    setEndGameDialogMessage(`The pokemon was ${targetPokemonData.name}!`);
+                    setDialogIsOpen(true);
+                    setInputDisabled(true);
+                    setNewPokemonInLocalStorage();
+                    setGuessNumber(0);
                 }
+
                 setRender(render + 1);
             }
         }, 300);
@@ -142,7 +164,7 @@ export const GamePage = () => {
         if (targetPokemonData.types == undefined)
             return "";
 
-        if (targetPokemonData.types.length > 2)
+        if (targetPokemonData.types[1] != "")
             return targetPokemonData.types.map(x => { return firstLetterToUpper(x) }).join(", ");
 
         return firstLetterToUpper(targetPokemonData.types[0]);
@@ -165,7 +187,16 @@ export const GamePage = () => {
         setResetGame(resetGameNumber++);
         getTargetPokemonData();
         setGuessInputValue("");
+        setLives([1, 1, 1, 1, 1]);
     };
+
+    const handleSnackbarClose = (event?: SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setAlertOpen(false);
+    }
 
     const handleInputEnter = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key == "Enter")
@@ -218,7 +249,7 @@ export const GamePage = () => {
             </div>
             <div className="gameContainer">
                 <div className={`hints ${hideHints()}`}>
-                    <div className="hintLine">
+                    <div className="hintLine heartLine">
                         Lives: {lives.map(() => {
                             return <img key={Math.random() * (100)} className="heart" src={HeartSvg} alt="Heart"/>
                         })}
@@ -230,12 +261,37 @@ export const GamePage = () => {
                     GuessLineList={guessLineList}
                     TargetPokemonData={targetPokemonData}
                     TargetPokemonSpecies={targetPokemonSpecies}></GuessLineList>
-                <VictoryDialog
+                <EndGameDialog
                     open={dialogIsOpen}
                     onClose={handleClose}
-                    message={`You have guessed ${lastGuess} in ${guessNumber} tries!`}
+                    message={endGameDialogMessage}
+                    title={endGameDialogTitle}
                 />
             </div>
+            <Snackbar
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                open={alertOpen}
+                autoHideDuration={3000}
+                onClose={handleSnackbarClose}>
+                <Alert
+                    variant="filled"
+                    severity="warning"
+                    action={
+                        <IconButton
+                            aria-label="close"
+                            color="primary"
+                            size="medium"
+                            onClick={() => {
+                                setAlertOpen(false);
+                            }}
+                        >
+                            <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                    }
+                    sx={{ width: '100%' }}>
+                    {alertMessage}
+                </Alert>
+            </Snackbar>
       </div>
     )
 }
