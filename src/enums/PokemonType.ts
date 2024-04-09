@@ -1,0 +1,21 @@
+export enum PokemonType {
+    Fire,
+    Water,
+    Grass,
+    Ground,
+    Dark,
+    Dragon,
+    Fairy,
+    Ghost,
+    Normal,
+    Psychic,
+    Steel,
+    Rock,
+    Poison,
+    Ice,
+    Flying,
+    Electric,
+    Bug,
+    Fighting,
+    Any
+}

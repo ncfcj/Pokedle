@@ -1,15 +1,10 @@
 import "./homePage.css"
 import {Link} from "react-router-dom";
 import {useEffect} from "react";
-import {PokemonService} from "../../services/PokemonService";
 import GithubLogo from "../../assets/github.svg";
 
 export const HomePage = () => {
-    const service = new PokemonService();
-
-    useEffect(() => {
-        service.clearLocalStorage();
-    }, [])
+    useEffect(() => {}, [])
 
     return (
         <div className="homePageContainer">

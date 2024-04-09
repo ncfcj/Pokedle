@@ -2,12 +2,21 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
-    width: 93%;
+    width: 100%;
     height: 100%;
-    overflow-y: auto;
     align-content: flex-start;
     gap: 1%;
     margin-bottom: 3%;
+}
+
+.guessLineTableBody{
+    overflow-y: auto;
+    max-height: 70dvh;
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    height: 90%;
+    align-content: flex-start;
 }
 
 .pokemonImageHeader{
@@ -25,7 +34,6 @@
 .lastHeaderItem{
     width: 12.1%;
 }
-
 
 /* width */
 ::-webkit-scrollbar {

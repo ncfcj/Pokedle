@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
-import { PokemonData } from "../../types/PokemonData";
+import {useEffect, useState} from "react";
+import {PokemonData} from "../../types/PokemonData";
 import "./GuessLine.css";
 import axios from "axios";
-import { PokemonSpecies } from "../../types/PokemonSpecies";
-import { Generations } from "../../enums/Generations";
+import {PokemonSpecies} from "../../types/PokemonSpecies";
+import {Generations} from "../../enums/Generations";
+import {StringHelper} from "../../helpers/StringHelper";
+import {Type} from "../Type/Type";
+import {PokemonTypeHelper} from "../../helpers/PokemonTypeHelper";
 
 type GuessLineComponent = {
     targetPokemonData : PokemonData,
@@ -31,7 +34,7 @@ export const GuessLine = (props : GuessLineComponent) => {
     }
 
     const handleTypes = (types : string[]) => {
-        types = types.map(type => capitalizeFirstLetter(type));
+        types = types.map(type => StringHelper.CapitalizeFirstLetter(type));
 
         if (types[1] == "")
             return types[0];
@@ -42,19 +45,6 @@ export const GuessLine = (props : GuessLineComponent) => {
     const verifyPokemonName = (name : string) => {
         if (name == props.targetPokemonData.name)
             return "right";
-        
-        return "wrong";
-    }
-
-    const verifyPokemonTypes = (types: string[]) => {
-        var targetTypes = props.targetPokemonData.types.filter(x => x != "");
-        var typesFiltered = types.filter(x => x != "");
-
-        if ((targetTypes[0] == typesFiltered[0] && targetTypes[1] == typesFiltered[1]))
-            return "right";
-        
-        if (targetTypes.includes(typesFiltered[0]) || targetTypes.includes(typesFiltered[1]))
-            return "close";
         
         return "wrong";
     }
@@ -96,28 +86,21 @@ export const GuessLine = (props : GuessLineComponent) => {
     }
 
     const writeShape = () => {
-        if (guessPokemonSpecies.shape == undefined) return "";
+        if (guessPokemonSpecies.shape == undefined) return StringHelper.CapitalizeFirstLetter("Unknown");
         
-        return capitalizeFirstLetter(guessPokemonSpecies.shape.name);
+        return StringHelper.CapitalizeFirstLetter(guessPokemonSpecies.shape.name);
     }
 
     const writeHabitat = () => {
-        if (guessPokemonSpecies.habitat == undefined) return capitalizeFirstLetter("Unknown");
+        if (guessPokemonSpecies.habitat == undefined) return StringHelper.CapitalizeFirstLetter("Unknown");
         
-        return capitalizeFirstLetter(guessPokemonSpecies.habitat.name);
+        return StringHelper.CapitalizeFirstLetter(guessPokemonSpecies.habitat.name);
     }
 
     const writeColor = () => {
-        if (guessPokemonSpecies.color == undefined) return "";
+        if (guessPokemonSpecies.color == undefined) return StringHelper.CapitalizeFirstLetter("Unknown");
         
-        return capitalizeFirstLetter(guessPokemonSpecies.color.name);
-    }
-
-    const capitalizeFirstLetter = (word : string) => {
-        if(word == undefined) return "";
-
-        const str = word.charAt(0);
-        return str.toUpperCase() + word.slice(1); 
+        return StringHelper.CapitalizeFirstLetter(guessPokemonSpecies.color.name);
     }
 
     const getGuessPokemonSpecies = async () => {
@@ -131,14 +114,20 @@ export const GuessLine = (props : GuessLineComponent) => {
 
     return(
         <div className="guess">
-            <div className={`hint pokemonSprite justifyWrappedText`}>
+            <div className={`firstHint hint pokemonSprite justifyWrappedText`}>
                 <img className="spriteImg" src={getSpritePathById(props.guessPokemonData.id)}></img>
             </div>
-            <div className={`name pokemonName justifyWrappedText ${verifyPokemonName(props.guessPokemonData.name)}`}>
+            <div className={`name hint pokemonName justifyWrappedText ${verifyPokemonName(props.guessPokemonData.name)}`}>
                 <p className="pokemonText wrap">{props.guessPokemonData.name}</p>
             </div>
-            <div className={`hint pokemonTypes justifyWrappedText ${verifyPokemonTypes(props.guessPokemonData.types)}`}>
-                <p className="pokemonText wrap">{handleTypes(props.guessPokemonData.types)}</p>
+            <div className={`hint pokemonTypes justifyWrappedText`}>
+                {props.guessPokemonData.types.map(type => {
+                    if (type != "")
+                        return <Type key={`${props.guessPokemonData.name}_${type}`}
+                              PokemonType={PokemonTypeHelper.GetPokemonTypeByName(type)}
+                              TargetPokemonTypes={props.targetPokemonData.types}
+                        ></Type>
+                })}
             </div>
             <div className={`hint pokemonRegion justifyWrappedText ${verifyGeneration(props.guessPokemonData.generation)}`}>
                 <p className="pokemonText wrap">{getGeneration(props.guessPokemonData.generation)}</p>
@@ -152,7 +141,7 @@ export const GuessLine = (props : GuessLineComponent) => {
             <div className={`hint pokemonColor justifyWrappedText ${verifyColor()}`}>
                 <p className="pokemonText wrap">{writeColor()}</p>
             </div>
-            <div className={`lastHint pokemonRarity justifyWrappedText ${verifyLegendary(props.guessPokemonData.isLegendary)}`}>
+            <div className={`hint lastHint pokemonRarity justifyWrappedText ${verifyLegendary(props.guessPokemonData.isLegendary)}`}>
                 <p className="pokemonText wrap">{props.guessPokemonData.isLegendary ? "Legendary" : "Normal"}</p>
             </div>
         </div>

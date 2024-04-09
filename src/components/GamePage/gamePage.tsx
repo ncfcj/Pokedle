@@ -1,276 +1,173 @@
-import {useEffect, useState, KeyboardEvent, SyntheticEvent} from "react";
+import React, {useEffect, SyntheticEvent, useState} from "react";
 import "./gamePage.css";
-import {PokemonService} from "../../services/PokemonService";
-import {PokemonData} from "../../types/PokemonData";
-import {GuessLineList} from "../GuessLineList/GuessLineList";
-import axios from "axios";
-import {PokemonSpecies} from "../../types/PokemonSpecies";
 import {EndGameDialog} from "../EndGameDialog/EndGameDialog";
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import {PokemonJson} from "../../types/PokemonJson";
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {GameMode} from "../../enums/GameMode";
-import HeartSvg from "../../assets/heart.svg";
 import Alert from '@mui/material/Alert';
-import {Collapse, IconButton, Snackbar} from "@mui/material";
+import {IconButton, Snackbar} from "@mui/material";
+import {PokemonDataService} from "../../services/PokemonDataService";
+import {GamePageHeader} from "../GamePageHeader/GamePageHeader";
+import {GamePageTable} from "../GamePageTable/GamePageTable";
+import { useSelector, useDispatch } from 'react-redux'
+import { removeLife,
+    changeGameModeToLives,
+    changeGameModeToClassic,
+    setNewTargetPokemon,
+    setNewTargetPokemonSpecies,
+    setGuessInputValue,
+    addNewGuessedPokemon,
+    sortGuessedPokemonList,
+    setLives,
+    setTotalGuesses,
+    resetGame,
+    setTargetPokemonColorAndTypes} from '../../slices/GamePageSlice'
+import {AppDispatch} from "../../store";
+import {PokemonGamePageService} from "../../services/PokemonGamePageService";
+import {GamePageSliceState} from "../../types/GamePageSliceState";
+import {EndGameDialogState} from "../../types/EndGameDialogState";
+import {AlertState} from "../../types/AlertState";
 
 function CloseIcon(props: { fontSize: string }) {
     return null;
 }
 
 export const GamePage = () => {
-    const [guessLineList, setGuessLineList] = useState<PokemonData[]>([] as PokemonData[]);
-    const [targetPokemonData, setTargetPokemonData] = useState<PokemonData>({} as PokemonData);
-    const [guessInputValue, setGuessInputValue] = useState<string>("");
-    const [targetPokemonSpecies, setTargetPokemonSpecies] = useState<PokemonSpecies>({} as PokemonSpecies);
-    const [guessNumber, setGuessNumber] = useState<number>(0);
-    const [inputDisabled, setInputDisabled] = useState<boolean>(false);
-    const [dialogIsOpen, setDialogIsOpen] = useState<boolean>(false);
-    const [resetGame, setResetGame] = useState<number>(0);
-    const [lastGuess, setLastGuess] = useState<string>("");
-    const [pokemonList, setPokemonList] = useState<PokemonJson[]>([] as PokemonJson[]);
-    const [gameMode, setGameMode] = useState<GameMode>(GameMode.Classic);
-    const [lives, setLives] = useState<number[]>([1, 1, 1, 1, 1] as number[]);
-    const [render, setRender] = useState<number>(0);
-    const [alertOpen, setAlertOpen] = useState<boolean>(false);
-    const [alertMessage, setAlertMessage] = useState<string>("");
-    const [endGameDialogMessage, setEndGameDialogMessage] = useState<string>("");
-    const [endGameDialogTitle, setEndGameDialogTitle] = useState<string>("");
+    const [endGameDialogState, setEndGameDialogState] = useState<EndGameDialogState>({EndGameDialogMessage: "", EndGameDialogTitle: "", EndGameDialogIsOpen: false});
+    const [alertState, setAlertState] = useState<AlertState>({AlertIsOpen: false, AlertMessage: ""});
+    const [resetGameState, setResetGameState] = useState<number>(0);
 
-
-    //#region ReactRouter Location Handling
+    // ReactRouter Location Handling
     const location = useLocation();
     const navigate = useNavigate();
-    //#endregion
 
-    const service = new PokemonService();
+    const { guessedPokemonList,
+        guessInputValue,
+        totalGuesses,
+        targetPokemonData,
+        targetPokemonSpecies,
+        gameMode,
+        lives,
+        targetPokemonColor,
+        targetPokemonTypes} = useSelector((state : GamePageSliceState) => state.GamePage);
 
-    const getTargetPokemonData = () => {
-        service.handleLocalStorage();
-        const pokemonNumber = localStorage.getItem("pokemon");
-        const pokemonData = service.getPokemonData(parseInt(pokemonNumber!));
+    console.log("Logging Redux State");
+    console.log({ Lives: lives,
+        Gamemode: gameMode,
+        TotalGuesses: totalGuesses,
+        TargetPokemonData: targetPokemonData,
+        TargetPokemonSpecies: targetPokemonSpecies,
+        TargetPokemonColor: targetPokemonColor,
+        TargetPokemonTypes: targetPokemonTypes,
+        GuessedPokemonList: guessedPokemonList,
+        GuessInputValue: guessInputValue});
 
-        setTargetPokemonData(pokemonData);
-        getTargetPokemonSpecies(pokemonData.id);
-    }
+    const dispatch: AppDispatch = useDispatch();
 
-    const resetLivesGame = () => {
-        setLives([1,1,1,1,1]);
-        handleClose();
-    }
+    const pokemonDataService = new PokemonDataService();
 
-    const guessPokemon = () => {
-        let guess = guessNumber + 1;
-        
-        const pokemon = service.getPokemonByName(guessInputValue, guess);
-        if (pokemon == undefined) {
-            setAlertMessage("There isn't a pokemon with this name, please try again!");
-            setAlertOpen(true);
-            return;
-        }
-        setGuessNumber(guess);
-
-        if (guessLineList.find(x => x.name == pokemon.name)) {
-            setAlertMessage("You already guessed this pokemon!");
-            setAlertOpen(true);
-            return;
-        }
-                
-        // Adds a new guess in the list and sorts it before storing in the state
-        var guessLineArray = guessLineList;
-        guessLineArray.push(pokemon);
-        guessLineArray.sort((a, b) => {
-            var keyA = a.guessNumber;
-            var keyB = b.guessNumber;
-            if (keyA < keyB) return 1;
-            if (keyA > keyB) return -1;
-            return 0;
-        });
-        setGuessLineList(guessLineArray);
-
-        setLastGuess(pokemon.name);
-
-        // clear the input value before a new guess
-        setGuessInputValue("");
-        let autoCompleteClearButton: HTMLElement = document.getElementsByClassName('MuiAutocomplete-clearIndicator')[0] as HTMLElement;
-        autoCompleteClearButton.click();
-
-        setTimeout(() => {
-            if (targetPokemonData.name.trim().toUpperCase() == pokemon.name.trim().toUpperCase()){
-                setEndGameDialogTitle("Congratulations!")
-                setEndGameDialogMessage(`You have guessed ${targetPokemonData.name} in ${guessNumber + 1} tries!`);
-                setDialogIsOpen(true);
-                setInputDisabled(true);
-                setNewPokemonInLocalStorage();
-                setGuessNumber(0);
-                return;
-            }
-            else if (gameMode == GameMode.Lives){
-                lives.pop();
-
-                if (lives.length == 0){
-                    setEndGameDialogTitle("Too Bad!")
-                    setEndGameDialogMessage(`The pokemon was ${targetPokemonData.name}!`);
-                    setDialogIsOpen(true);
-                    setInputDisabled(true);
-                    setNewPokemonInLocalStorage();
-                    setGuessNumber(0);
-                }
-
-                setRender(render + 1);
-            }
-        }, 300);
-    }
-
-    const getTargetPokemonSpecies = async (pokemonId : number) => {
-        const res = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`);
-        setTargetPokemonSpecies(res.data);
-    }
-
-    const setNewPokemonInLocalStorage = () => {
-        var totalOfPokemons = 251;
-        localStorage.setItem("pokemon", (Math.floor(Math.random() * totalOfPokemons) + 1).toString());
-    }
-
-    const verifyGameMode = () => {
+    const StartGame = () => {
         if (location.pathname.includes("modes/lives")){
-            setGameMode(GameMode.Lives);
+            dispatch(changeGameModeToLives());
+            dispatch(setLives(5));
         }
 
         if (location.pathname.includes("modes/classic")){
-            setGameMode(GameMode.Classic);
+            dispatch(changeGameModeToClassic());
         }
     }
 
-    const hideHints = () => {
-        if (gameMode == GameMode.Classic)
-            return "hide";
+    const Guess = (guessedPokemon: string) => {
+        try {
+            const guessCount = totalGuesses + 1;
+            const pokemon = pokemonDataService.GetPokemonByName(guessedPokemon);
 
-        return "";
+            PokemonGamePageService.PokemonAlreadyGuessed(guessedPokemonList, pokemon);
+
+            dispatch(addNewGuessedPokemon(pokemon));
+            dispatch(sortGuessedPokemonList());
+            dispatch(setTotalGuesses(guessCount));
+
+            // Check if game is over
+            CheckGameIsOver(pokemon.name)
+        }
+        catch (error : any){
+            setAlertState({AlertIsOpen: true, AlertMessage: error.message});
+            console.error(error.message);
+        }
     }
 
-    const firstLetterToUpper = (word : string) => {
-        if (word == undefined || word == "" || word == " ")
-            return "";
-
-        var firstLetter = word[0].toUpperCase();
-        var restOfWord = word.slice(1);
-
-        return firstLetter + restOfWord;
+    const EndGame = () => {
+        setEndGameDialogState({
+            EndGameDialogTitle: "Congratulations!",
+            EndGameDialogMessage: `You have guessed ${targetPokemonData.name} in ${totalGuesses} tries!`,
+            EndGameDialogIsOpen: true
+        });
     }
 
-    const getTargetPokemonTypes = () => {
-        if (targetPokemonData.types == undefined)
-            return "";
-
-        if (targetPokemonData.types[1] != "")
-            return targetPokemonData.types.map(x => { return firstLetterToUpper(x) }).join(", ");
-
-        return firstLetterToUpper(targetPokemonData.types[0]);
+    const GameLost = () => {
+        setEndGameDialogState({
+            EndGameDialogTitle: "Too Bad!",
+            EndGameDialogMessage: `The pokemon was ${targetPokemonData.name}!`,
+            EndGameDialogIsOpen: true
+        });
     }
 
-    const getTargetPokemonColor = () => {
-        if (targetPokemonSpecies.color == undefined)
-            return "";
+    const CheckGameIsOver = (pokemonName : string) : void => {
+        if (PokemonGamePageService.PokemonGuessedCorrectly(targetPokemonData.name, pokemonName))
+            EndGame();
 
-        return firstLetterToUpper(targetPokemonSpecies.color?.name);
+        if (gameMode === GameMode.Lives)
+            if (lives == 0)
+                GameLost();
     }
 
-    const handleClose = () => {
-        setDialogIsOpen(false);
-        setInputDisabled(false);
-        setGuessLineList([] as PokemonData[]);
-        setGuessNumber(0);
-        setNewPokemonInLocalStorage();
-        let resetGameNumber = resetGame;
-        setResetGame(resetGameNumber++);
-        getTargetPokemonData();
-        setGuessInputValue("");
-        setLives([1, 1, 1, 1, 1]);
-    };
+    const RetrieveNewTargetPokemon = async () => {
+        dispatch(resetGame());
+
+        const targetPokemonData = pokemonDataService.RetrieveNewPokemon();
+        const targetPokemonSpecies = await pokemonDataService.RetrievePokemonSpeciesAsync(targetPokemonData.id);
+
+        dispatch(setNewTargetPokemon(targetPokemonData));
+        dispatch(setTargetPokemonColorAndTypes({pokemonColor: targetPokemonSpecies.color.name, pokemonTypes: targetPokemonData.types}));
+        dispatch(setNewTargetPokemonSpecies(targetPokemonSpecies));
+    }
 
     const handleSnackbarClose = (event?: SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
             return;
         }
 
-        setAlertOpen(false);
+        setAlertState({AlertMessage: "", AlertIsOpen: false});
     }
 
-    const handleInputEnter = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key == "Enter")
-            guessPokemon();
+    const handleEndGameDialogClose = () => {
+        console.log("Resetting the game!");
+        setResetGameState(resetGameState + 1);
+    }
+
+    const handleInputValue = (inputValue: string) => {
+        Guess(inputValue);
     }
 
     useEffect(() => {
-        verifyGameMode();
-        const service = new PokemonService();
-        setPokemonList(service.getPokemonList() as PokemonJson[]);
-        getTargetPokemonData();
-    }, [render]);
+        RetrieveNewTargetPokemon().then(_ => console.log("A new pokemon has been caught!"));
+        StartGame();
+    }, [resetGameState]);
 
     return(
-        <div className='container'>
-            <div className="guessContainer">
-                <div className="return">
-                    <Link to={"/"} >
-                        <button className={"returnButton"} title="Return to main menu!">
-                            <img className={"returnButtonImage"} src={"/return.png"} alt={"Return to main menu!"}/>
-                        </button>
-                    </Link>
-                </div>
-                <div className="nameInput">
-                    <Autocomplete
-                        onKeyUp={handleInputEnter}
-                        clearOnBlur={false}
-                        blurOnSelect={"mouse"}
-                        id="guessInput"
-                        options={pokemonList}
-                        getOptionLabel={(option) => option.name}
-                        groupBy={(option) => service.getGenerationNameFromId(option.generation)}
-                        sx={{ width: 300 }}
-                        onInputChange={async (event, value) => {
-                            setGuessInputValue(value);
-                        }}
-                        inputValue={guessInputValue}
-                        renderInput={(params) =>
-                            <TextField {...params}
-                                       label="Pokemon"
-                                       disabled={inputDisabled}
-                                       className={"guessInput pokemonText"}
-                            />}
-                    />
-                    <button
-                        disabled={inputDisabled}
-                        onClick={guessPokemon}
-                        className="guessInputButton">Guess</button>
-                </div>
-            </div>
-            <div className="gameContainer">
-                <div className={`hints ${hideHints()}`}>
-                    <div className="hintLine heartLine">
-                        Lives: {lives.map(() => {
-                            return <img key={Math.random() * (100)} className="heart" src={HeartSvg} alt="Heart"/>
-                        })}
-                    </div>
-                    <div className="hintLine">Type(s): {getTargetPokemonTypes()}</div>
-                    <div className="hintLine">Color: {getTargetPokemonColor()}</div>
-                </div>
-                <GuessLineList
-                    GuessLineList={guessLineList}
-                    TargetPokemonData={targetPokemonData}
-                    TargetPokemonSpecies={targetPokemonSpecies}></GuessLineList>
-                <EndGameDialog
-                    open={dialogIsOpen}
-                    onClose={handleClose}
-                    message={endGameDialogMessage}
-                    title={endGameDialogTitle}
-                />
-            </div>
+        <div className='page'>
+            <GamePageHeader
+                InputValueHandler={handleInputValue}
+            />
+            <GamePageTable/>
+            <EndGameDialog
+                open={endGameDialogState.EndGameDialogIsOpen}
+                onClose={handleEndGameDialogClose}
+                message={endGameDialogState.EndGameDialogMessage}
+                title={endGameDialogState.EndGameDialogTitle}/>
             <Snackbar
                 anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                open={alertOpen}
+                open={alertState.AlertIsOpen}
                 autoHideDuration={3000}
                 onClose={handleSnackbarClose}>
                 <Alert
@@ -282,14 +179,13 @@ export const GamePage = () => {
                             color="primary"
                             size="medium"
                             onClick={() => {
-                                setAlertOpen(false);
-                            }}
-                        >
+                                setAlertState({AlertMessage: "", AlertIsOpen: false});
+                            }}>
                             <CloseIcon fontSize="inherit" />
                         </IconButton>
                     }
                     sx={{ width: '100%' }}>
-                    {alertMessage}
+                    {alertState.AlertMessage}
                 </Alert>
             </Snackbar>
       </div>

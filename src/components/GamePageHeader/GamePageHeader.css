@@ -1,0 +1,51 @@
+.MuiInputBase-root{
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.nameInput{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    gap: 2%;
+    width: 60%;
+    align-items: center;
+}
+
+.return{
+    width: 18%;
+    padding-left: 3%;
+}
+
+.returnButton{
+    background-color: red;
+    color: white;
+    max-width: 93%;
+}
+
+.returnButtonImage{
+    width: 1.2rem;
+}
+
+.guessContainer{
+    display: flex;
+    height: 20%;
+    width: 100%;
+    margin-top: 2%;
+    gap: 2%;
+}
+
+.space{
+    width: 15%;
+}
+
+.inputAndButton{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    gap: 3%;
+}
+
+.guessInputButton{
+    background-color: red;
+    color: whitesmoke;
+}

@@ -4,5 +4,5 @@ export type PokemonData = {
     types : string[],
     isLegendary : boolean,
     id: number,
-    guessNumber : number
+    guessNumber: number
 }

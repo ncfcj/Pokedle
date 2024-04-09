@@ -1,11 +1,11 @@
-import "./Header.css";
+import "./GuessLineTableHeader.css";
 import {useEffect} from "react";
 
-export const Header = () => {
+export const GuessLineTableHeader = () => {
     useEffect(() => {});
 
     return(
-        <div className="header">
+        <div className="guessLineTableHeader">
             <div className="pokemonImageHeader pokemonText">Pokemon</div>
             <div className="pokemonNameHeader nameHeader pokemonText">Name</div>
             <div className="pokemonTypesHeader headerItem types pokemonText">Types</div>

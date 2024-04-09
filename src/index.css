@@ -72,26 +72,26 @@ button:focus-visible {
 @font-face {
   font-family: "PokemonGb";
   src: local("PokemonGb"),
-   url("/public/fonts/PokemonGb.ttf") format("truetype");
+   url("/fonts/PokemonGb.ttf") format("truetype");
   font-weight: bold;
 }
 
 @font-face {
   font-family: "PokemonSolid";
   src: local("PokemonSolid"),
-    url("/public/fonts/PokemonSolid.ttf") format("truetype");
+    url("/fonts/PokemonSolid.ttf") format("truetype");
   font-weight: bold;
 }
 
 @font-face {
   font-family: "PokemonHollow";
   src: local("PokemonHollow"),
-    url("/public/fonts/PokemonHollow.ttf") format("truetype");
+    url("/fonts/PokemonHollow.ttf") format("truetype");
   font-weight: bold;
 }
 
 @font-face {
   font-family: "Sword";
   src: local("Sword"),
-  url("/public/fonts/Sword.otf") format("truetype");
+  url("/fonts/Sword.otf") format("truetype");
 }

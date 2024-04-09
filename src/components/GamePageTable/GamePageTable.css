@@ -1,0 +1,47 @@
+.table{
+    display: flex;
+    flex-flow: row wrap;
+    width: 95%;
+    gap: 3%;
+    align-items: flex-start;
+    height: 90%;
+    margin-bottom: 1%;
+}
+
+.gameContainer{
+    height: 80%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-flow: column nowrap;
+    align-items: center;
+    gap: 3%;
+}
+
+.hints{
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+    gap: 1%;
+    height: 15%;
+    margin-bottom: 1.5%;
+}
+
+.hide{
+    display: none;
+}
+
+.hintLine{
+    display: flex;
+    gap: 0.1rem;
+    justify-content: center;
+}
+
+.heartLine{
+    display: flex;
+    height: 40%;
+}
+
+.heart{
+    transform: scale(0.8);
+}
